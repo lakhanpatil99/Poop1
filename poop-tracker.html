@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💩 POOPLOG — Gut Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Righteous&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT VARIABLES — THE SEWER PALETTE
+═══════════════════════════════════════════ */
+:root {
+  --void: #0a0500;
+  --deep: #110800;
+  --mud: #1e0f00;
+  --brown1: #3d1a00;
+  --brown2: #6b2f00;
+  --brown3: #a0520a;
+  --amber: #d97706;
+  --gold: #f59e0b;
+  --neon-gold: #fbbf24;
+  --neon-yellow: #fde68a;
+  --toxic: #84cc16;
+  --glow-amber: rgba(245,158,11,0.35);
+  --glow-brown: rgba(160,82,10,0.4);
+  --glow-red: rgba(220,38,38,0.5);
+  --glass: rgba(30,15,0,0.7);
+  --glass2: rgba(61,26,0,0.5);
+  --border: rgba(245,158,11,0.2);
+  --border-bright: rgba(245,158,11,0.6);
+  --text: #fde68a;
+  --text-dim: rgba(253,230,138,0.55);
+  --red: #ef4444;
+  --green: #22c55e;
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+* { box-sizing:border-box; margin:0; padding:0; }
+
+html { scroll-behavior:smooth; }
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--void);
+  color:var(--text);
+  min-height:100vh;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E💩%3C/text%3E%3C/svg%3E") 16 16, auto;
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATED BACKGROUND CANVAS
+═══════════════════════════════════════════ */
+#bgCanvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* ═══════════════════════════════════════════
+   FLOATING POOP RAIN
+═══════════════════════════════════════════ */
+.poop-rain { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.rain-drop {
+  position:absolute; top:-60px; font-size:1.5rem;
+  animation:rainFall linear infinite;
+  opacity:0;
+  filter:blur(0.5px);
+}
+@keyframes rainFall {
+  0%   { transform:translateY(-60px) rotate(0deg); opacity:0; }
+  10%  { opacity:0.12; }
+  90%  { opacity:0.08; }
+  100% { transform:translateY(110vh) rotate(360deg); opacity:0; }
+}
+
+/* ═══════════════════════════════════════════
+   MAIN WRAPPER
+═══════════════════════════════════════════ */
+.page { position:relative; z-index:2; }
+
+/* ═══════════════════════════════════════════
+   HEADER — THE THRONE ROOM
+═══════════════════════════════════════════ */
+header {
+  position:relative; overflow:hidden;
+  padding:40px 20px 60px;
+  background:radial-gradient(ellipse at 50% 0%, #3d1a00 0%, #1e0f00 50%, var(--void) 100%);
+  text-align:center;
+  border-bottom: 1px solid var(--border-bright);
+}
+
+/* rotating glow orb behind header */
+header::before {
+  content:'';
+  position:absolute; top:-60px; left:50%; transform:translateX(-50%);
+  width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+  animation:orb 6s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes orb { from{transform:translateX(-50%) scale(1)} to{transform:translateX(-50%) scale(1.3)} }
+
+.header-poop {
+  font-size:80px; display:inline-block;
+  animation:megaBounce 1.5s cubic-bezier(.36,.07,.19,.97) infinite;
+  filter:drop-shadow(0 0 30px var(--neon-gold));
+}
+@keyframes megaBounce {
+  0%,100%{ transform:translateY(0) rotate(-5deg) scale(1); }
+  40%    { transform:translateY(-22px) rotate(8deg) scale(1.1); }
+  60%    { transform:translateY(-18px) rotate(-3deg) scale(1.08); }
+}
+
+header h1 {
+  font-family:'Righteous',cursive;
+  font-size:clamp(2.5rem,8vw,5rem);
+  background:linear-gradient(135deg, #fbbf24, #f59e0b, #d97706, #fde68a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:4px;
+  filter:drop-shadow(0 0 20px rgba(251,191,36,0.5));
+  line-height:1;
+  margin:8px 0 4px;
+}
+
+header .tagline {
+  font-family:'Boogaloo',cursive;
+  font-size:1.15rem; color:var(--text-dim);
+  letter-spacing:2px; margin-bottom:16px;
+}
+
+.streak-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(251,191,36,0.1));
+  border:1.5px solid var(--border-bright);
+  border-radius:50px; padding:8px 22px;
+  font-family:'Boogaloo',cursive; font-size:1.1rem;
+  box-shadow:0 0 20px rgba(245,158,11,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+}
+.streak-pill .fire { animation:fireShake .3s infinite alternate; display:inline-block; }
+@keyframes fireShake { from{transform:scale(1) rotate(-3deg)} to{transform:scale(1.15) rotate(3deg)} }
+
+/* WAVE divider */
+.wave-divider { width:100%; overflow:hidden; line-height:0; margin-top:-1px; }
+.wave-divider svg { display:block; width:100%; }
+
+/* ═══════════════════════════════════════════
+   TICKER TAPE
+═══════════════════════════════════════════ */
+.ticker {
+  background:linear-gradient(90deg, var(--brown2), var(--amber), var(--brown2));
+  padding:10px 0; overflow:hidden; white-space:nowrap;
+  border-top:1px solid rgba(255,255,255,0.05);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.ticker-track { display:inline-flex; animation:tickerScroll 35s linear infinite; }
+.ticker-track span {
+  font-family:'Boogaloo',cursive; font-size:.95rem;
+  color:var(--void); padding:0 36px;
+  text-shadow:none;
+}
+@keyframes tickerScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════════════════
+   CONTAINER
+═══════════════════════════════════════════ */
+.container { max-width:920px; margin:0 auto; padding:28px 16px 80px; }
+
+/* ═══════════════════════════════════════════
+   SECTION TITLE
+═══════════════════════════════════════════ */
+.sec-title {
+  font-family:'Righteous',cursive;
+  font-size:1.25rem; color:var(--neon-gold);
+  margin:32px 0 14px;
+  display:flex; align-items:center; gap:10px;
+  text-shadow:0 0 12px rgba(251,191,36,0.4);
+}
+.sec-title::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg, var(--border-bright), transparent);
+}
+
+/* ═══════════════════════════════════════════
+   GLASS CARD BASE
+═══════════════════════════════════════════ */
+.card {
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  backdrop-filter:blur(16px);
+  box-shadow:0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  transition:transform .2s, box-shadow .2s;
+}
+.card:hover {
+  transform:translateY(-3px);
+  box-shadow:0 12px 50px rgba(0,0,0,0.6), 0 0 30px var(--glow-amber), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ═══════════════════════════════════════════
+   🚨 CRAMP ALERT BANNER
+═══════════════════════════════════════════ */
+.cramp-banner {
+  display:none; border-radius:20px; padding:24px;
+  background:linear-gradient(135deg,#7f1d1d,#991b1b,#dc2626);
+  border:2px solid rgba(239,68,68,0.8);
+  text-align:center; margin-bottom:10px;
+  animation:crampPulse .5s ease infinite alternate;
+  box-shadow:0 0 60px rgba(220,38,38,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.cramp-banner.active { display:block; }
+@keyframes crampPulse {
+  from { box-shadow:0 0 40px rgba(220,38,38,0.5); border-color:rgba(239,68,68,0.6); }
+  to   { box-shadow:0 0 80px rgba(220,38,38,0.9), 0 0 0 8px rgba(220,38,38,0.15); border-color:rgba(239,68,68,1); }
+}
+.cramp-icon { font-size:3.5rem; display:inline-block; animation:crampWiggle .15s infinite alternate; }
+@keyframes crampWiggle { from{transform:rotate(-8deg) scale(1)} to{transform:rotate(8deg) scale(1.15)} }
+.cramp-banner h2 {
+  font-family:'Righteous',cursive; font-size:2rem; color:#fff;
+  text-shadow:0 0 20px #fff; margin:6px 0 4px;
+}
+.cramp-banner p { font-size:1rem; color:rgba(255,255,255,.85); font-weight:600; }
+.cramp-dismiss {
+  margin-top:14px; background:rgba(255,255,255,.15); border:2px solid rgba(255,255,255,.4);
+  color:#fff; border-radius:50px; padding:10px 28px; font-weight:700;
+  cursor:pointer; font-size:.9rem; font-family:'DM Sans',sans-serif;
+  transition:all .2s; backdrop-filter:blur(8px);
+}
+.cramp-dismiss:hover { background:rgba(255,255,255,.28); transform:scale(1.05); }
+
+/* ═══════════════════════════════════════════
+   DAILY TIP BOX
+═══════════════════════════════════════════ */
+.tip-box {
+  padding:16px 20px; border-radius:16px;
+  background:linear-gradient(135deg, rgba(61,26,0,0.8), rgba(30,15,0,0.9));
+  border-left:4px solid var(--amber);
+  border:1px solid var(--border);
+  display:flex; align-items:center; gap:14px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4), -4px 0 0 var(--amber);
+  animation:tipSlide .6s ease;
+}
+@keyframes tipSlide { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:none} }
+.tip-icon { font-size:2rem; flex-shrink:0; filter:drop-shadow(0 0 8px var(--neon-gold)); }
+.tip-text { font-size:.88rem; font-weight:500; color:var(--neon-yellow); line-height:1.5; }
+
+/* ═══════════════════════════════════════════
+   TODAY HERO CARD
+═══════════════════════════════════════════ */
+.hero-card {
+  padding:28px;
+  background:radial-gradient(ellipse at 30% 50%, rgba(107,47,0,0.5) 0%, rgba(30,15,0,0.8) 100%);
+  border:1px solid var(--border-bright);
+  border-radius:24px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;
+  box-shadow:0 12px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
+  animation:cardPop .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes cardPop { from{opacity:0;transform:scale(.9) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+.hero-count { text-align:center; }
+.hero-num {
+  font-family:'Righteous',cursive;
+  font-size:6rem; line-height:1;
+  background:linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(251,191,36,0.6));
+  animation:numGlow 2s ease-in-out infinite alternate;
+}
+@keyframes numGlow {
+  from { filter:drop-shadow(0 0 20px rgba(251,191,36,0.4)); }
+  to   { filter:drop-shadow(0 0 40px rgba(251,191,36,0.9)); }
+}
+.hero-label { font-family:'Boogaloo',cursive; font-size:.95rem; color:var(--text-dim); letter-spacing:2px; margin-top:-4px; }
+
+.hero-meta { text-align:center; }
+.hero-meta-val { font-family:'Righteous',cursive; font-size:2rem; color:var(--neon-gold); }
+.hero-meta-lbl { font-size:.72rem; color:var(--text-dim); font-weight:600; letter-spacing:1px; }
+
+.hero-btns { display:flex; flex-direction:column; gap:12px; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  padding:13px 24px; border-radius:50px; border:none;
+  font-family:'Boogaloo',cursive; font-size:1.1rem;
+  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; gap:8px;
+  position:relative; overflow:hidden;
+  letter-spacing:.5px;
+}
+.btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 100%);
+  border-radius:inherit;
+}
+.btn:active { transform:scale(.95) !important; }
+
+.btn-gold {
+  background:linear-gradient(135deg, #f59e0b, #d97706);
+  color:#1a0800; font-weight:800;
+  box-shadow:0 4px 20px rgba(245,158,11,0.5), 0 0 0 0 rgba(245,158,11,0.4);
+  animation:btnPulse 2.5s ease-in-out infinite;
+}
+@keyframes btnPulse {
+  0%,100%{ box-shadow:0 4px 20px rgba(245,158,11,0.5); }
+  50%    { box-shadow:0 4px 30px rgba(245,158,11,0.8), 0 0 60px rgba(245,158,11,0.3); }
+}
+.btn-gold:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 8px 35px rgba(245,158,11,0.7); }
+
+.btn-red {
+  background:linear-gradient(135deg,#dc2626,#991b1b);
+  color:#fff; font-weight:700;
+  box-shadow:0 4px 20px rgba(220,38,38,0.5);
+  animation:redPulse 1.8s ease-in-out infinite;
+}
+@keyframes redPulse {
+  0%,100%{ box-shadow:0 4px 20px rgba(220,38,38,0.5); }
+  50%    { box-shadow:0 4px 30px rgba(220,38,38,0.8); }
+}
+.btn-red:hover { transform:translateY(-3px); }
+
+.btn-ghost {
+  background:rgba(245,158,11,0.08); color:var(--neon-gold);
+  border:1.5px solid var(--border); font-weight:600;
+}
+.btn-ghost:hover { background:rgba(245,158,11,0.15); border-color:var(--border-bright); transform:translateY(-2px); }
+
+/* ═══════════════════════════════════════════
+   URGENCY METER
+═══════════════════════════════════════════ */
+.urgency-card { padding:22px; }
+.urg-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.urg-header span { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--text-dim); }
+.urg-current { font-family:'Righteous',cursive; font-size:1rem; }
+
+.urg-levels { display:flex; gap:10px; }
+.urg-btn {
+  flex:1; background:rgba(30,15,0,0.8); border:1.5px solid var(--border);
+  border-radius:16px; padding:14px 6px; text-align:center;
+  cursor:pointer; transition:all .25s; font-size:.72rem; font-weight:700;
+  color:var(--text-dim);
+}
+.urg-btn .ue { font-size:2rem; display:block; margin-bottom:5px; transition:transform .2s; }
+.urg-btn:hover { border-color:var(--amber); transform:scale(1.06); }
+.urg-btn:hover .ue { transform:scale(1.2) rotate(-5deg); }
+.urg-btn.sel-1 { border-color:#22c55e; background:rgba(34,197,94,0.1); color:#4ade80; box-shadow:0 0 20px rgba(34,197,94,0.2); }
+.urg-btn.sel-2 { border-color:#eab308; background:rgba(234,179,8,0.1); color:#fde047; box-shadow:0 0 20px rgba(234,179,8,0.2); }
+.urg-btn.sel-3 { border-color:#f97316; background:rgba(249,115,22,0.1); color:#fb923c; box-shadow:0 0 20px rgba(249,115,22,0.2); }
+.urg-btn.sel-4 { border-color:#ef4444; background:rgba(239,68,68,0.12); color:#f87171; box-shadow:0 0 30px rgba(239,68,68,0.4); animation:urgAlert .4s infinite alternate; }
+@keyframes urgAlert { from{box-shadow:0 0 20px rgba(239,68,68,0.3)} to{box-shadow:0 0 50px rgba(239,68,68,0.7)} }
+
+.urg-msg { margin-top:12px; text-align:center; font-family:'Boogaloo',cursive; font-size:1.05rem; min-height:26px; }
+
+/* ═══════════════════════════════════════════
+   SYMPTOM CHECKER
+═══════════════════════════════════════════ */
+.sym-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.sym-item {
+  background:rgba(30,15,0,0.8); border:1.5px solid var(--border);
+  border-radius:18px; padding:16px 10px; text-align:center;
+  cursor:pointer; transition:all .25s; position:relative; overflow:hidden;
+  font-size:.78rem; font-weight:700; color:var(--text-dim);
+}
+.sym-item::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 70%);
+  opacity:0; transition:opacity .3s;
+}
+.sym-item:hover::before { opacity:1; }
+.sym-item:hover { border-color:var(--amber); transform:scale(1.05) translateY(-2px); color:var(--text); }
+.sym-emoji { font-size:2.2rem; display:block; margin-bottom:6px; transition:transform .2s; }
+.sym-item:hover .sym-emoji { transform:scale(1.15) rotate(-5deg); }
+.sym-item.on { border-color:var(--red); background:rgba(239,68,68,0.12); color:#f87171; box-shadow:0 0 20px rgba(239,68,68,0.25); }
+.sym-item.on .sym-emoji { animation:sympShake .2s infinite alternate; }
+@keyframes sympShake { from{transform:rotate(-6deg)} to{transform:rotate(6deg)} }
+.sym-dot { position:absolute; top:8px; right:8px; width:10px; height:10px; border-radius:50%; background:var(--red); opacity:0; box-shadow:0 0 6px var(--red); }
+.sym-item.on .sym-dot { opacity:1; animation:dotBlink .8s ease infinite; }
+@keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+/* ═══════════════════════════════════════════
+   STATS GRID
+═══════════════════════════════════════════ */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; }
+.stat-card {
+  padding:20px 14px; text-align:center;
+  background:rgba(20,10,0,0.8); border:1px solid var(--border);
+  border-radius:20px; transition:all .25s; cursor:default;
+  position:relative; overflow:hidden;
+}
+.stat-card::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--amber),transparent);
+  transform:scaleX(0); transition:transform .3s;
+}
+.stat-card:hover::after { transform:scaleX(1); }
+.stat-card:hover { border-color:var(--border-bright); box-shadow:0 0 25px var(--glow-amber); }
+.s-ico { font-size:2rem; filter:drop-shadow(0 0 8px var(--glow-amber)); }
+.s-val { font-family:'Righteous',cursive; font-size:2.2rem; color:var(--neon-gold); line-height:1.1; margin:4px 0; }
+.s-lbl { font-size:.68rem; color:var(--text-dim); font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+
+/* ═══════════════════════════════════════════
+   WATER TRACKER
+═══════════════════════════════════════════ */
+.water-card { padding:20px 22px; }
+.water-cups { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 8px; }
+.cup {
+  width:46px; height:46px; border-radius:12px;
+  border:1.5px solid rgba(91,155,213,0.3); background:rgba(10,5,0,0.6);
+  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  position:relative;
+}
+.cup:hover { transform:scale(1.12) translateY(-3px); border-color:rgba(91,155,213,0.8); }
+.cup.filled {
+  background:linear-gradient(180deg,rgba(125,211,252,0.3),rgba(14,165,233,0.4));
+  border-color:rgba(125,211,252,0.8);
+  box-shadow:0 0 15px rgba(14,165,233,0.4);
+}
+.cup.filled::after { content:''; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 50%); }
+.water-lbl { font-family:'Boogaloo',cursive; font-size:1rem; color:#7dd3fc; letter-spacing:1px; }
+
+/* ═══════════════════════════════════════════
+   WEEKLY CHART
+═══════════════════════════════════════════ */
+.chart-card { padding:22px; }
+.bar-wrap { display:flex; align-items:flex-end; gap:10px; height:90px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+.bar-fill {
+  width:100%; border-radius:8px 8px 2px 2px;
+  background:linear-gradient(180deg, var(--amber) 0%, var(--brown2) 100%);
+  min-height:4px; transition:height .7s cubic-bezier(.34,1.56,.64,1);
+  position:relative; overflow:hidden;
+}
+.bar-fill::after { content:''; position:absolute; top:0; left:0; right:0; height:40%; background:rgba(255,255,255,.12); border-radius:inherit; }
+.bar-fill.today { background:linear-gradient(180deg,#fde68a,#f59e0b); box-shadow:0 0 15px rgba(253,230,138,0.5); }
+.bar-n { font-size:.62rem; font-weight:800; color:var(--amber); }
+.bar-d { font-size:.6rem; color:var(--text-dim); font-weight:700; letter-spacing:.5px; }
+.bar-d.today-lbl { color:var(--neon-gold); font-size:.68rem; }
+
+/* ═══════════════════════════════════════════
+   DIGESTION SCORE RING
+═══════════════════════════════════════════ */
+.score-card { padding:24px; text-align:center; }
+.score-ring-wrap { position:relative; width:150px; height:150px; margin:0 auto 20px; }
+.score-ring-wrap svg { transform:rotate(-90deg); filter:drop-shadow(0 0 12px rgba(245,158,11,0.3)); }
+.score-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.score-n { font-family:'Righteous',cursive; font-size:2.6rem; color:var(--neon-gold); line-height:1; }
+.score-s { font-size:.65rem; color:var(--text-dim); font-weight:700; letter-spacing:2px; margin-top:2px; }
+
+.tip-list { list-style:none; text-align:left; }
+.tip-list li {
+  padding:10px 14px 10px 42px; background:rgba(20,10,0,0.7);
+  border-radius:12px; margin-bottom:8px; font-size:.84rem;
+  border:1px solid var(--border); color:var(--neon-yellow); font-weight:500;
+  position:relative; line-height:1.4;
+}
+.tip-list li::before { content:attr(data-icon); position:absolute; left:12px; top:10px; }
+
+/* ═══════════════════════════════════════════
+   LOG MODAL
+═══════════════════════════════════════════ */
+.overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.75); backdrop-filter:blur(10px);
+  z-index:200; align-items:center; justify-content:center; padding:16px;
+}
+.overlay.open { display:flex; }
+.modal {
+  background:linear-gradient(160deg, #1e0f00 0%, #0a0500 100%);
+  border:1px solid var(--border-bright);
+  border-radius:28px; padding:30px;
+  max-width:430px; width:100%; max-height:90vh; overflow-y:auto;
+  box-shadow:0 30px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,0.03), 0 0 60px rgba(245,158,11,0.1);
+  animation:modalIn .35s cubic-bezier(.34,1.56,.64,1);
+  scrollbar-width:thin; scrollbar-color:var(--brown2) var(--void);
+}
+@keyframes modalIn { from{opacity:0;transform:scale(.8) translateY(30px)} to{opacity:1;transform:none} }
+.modal h2 { font-family:'Righteous',cursive; font-size:1.8rem; color:var(--neon-gold); text-align:center; margin-bottom:20px; text-shadow:0 0 20px rgba(251,191,36,0.4); }
+.m-label { font-family:'Boogaloo',cursive; font-size:.95rem; color:var(--amber); letter-spacing:1px; margin-bottom:8px; display:block; }
+
+/* bristol grid in modal */
+.bristol-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:18px; }
+.btype {
+  background:rgba(20,10,0,0.8); border:1.5px solid var(--border);
+  border-radius:14px; padding:10px 4px; text-align:center;
+  cursor:pointer; transition:all .2s;
+}
+.btype:hover { border-color:var(--amber); transform:scale(1.06); }
+.btype.sel { border-color:var(--neon-gold); background:rgba(245,158,11,0.12); box-shadow:0 0 15px rgba(245,158,11,0.25); }
+.bt-ico { font-size:1.6rem; }
+.bt-n { font-size:.58rem; font-weight:800; color:var(--amber); margin-top:2px; }
+.bt-l { font-size:.52rem; color:var(--text-dim); }
+
+/* feeling row */
+.feel-row { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.feel-btn {
+  flex:1; min-width:62px; padding:10px 4px; border-radius:12px;
+  border:1.5px solid var(--border); background:rgba(20,10,0,0.8);
+  text-align:center; cursor:pointer; transition:all .2s; font-size:.72rem;
+  font-weight:700; color:var(--text-dim);
+}
+.feel-btn:hover { border-color:var(--amber); color:var(--text); }
+.feel-btn.sel { border-color:var(--neon-gold); background:rgba(245,158,11,0.12); color:var(--neon-yellow); box-shadow:0 0 12px rgba(245,158,11,0.2); }
+.fe { font-size:1.4rem; display:block; margin-bottom:4px; }
+
+/* slider */
+.srow { margin-bottom:18px; }
+.slbl { display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; color:var(--amber); margin-bottom:8px; }
+input[type=range] { width:100%; accent-color:var(--amber); appearance:none; height:6px; border-radius:6px; background:rgba(245,158,11,0.2); outline:none; }
+input[type=range]::-webkit-slider-thumb { appearance:none; width:18px; height:18px; border-radius:50%; background:var(--amber); box-shadow:0 0 10px rgba(245,158,11,0.5); cursor:pointer; }
+
+/* notes */
+.modal textarea {
+  width:100%; background:rgba(10,5,0,0.8);
+  border:1.5px solid var(--border); border-radius:14px;
+  padding:12px; font-family:'DM Sans',sans-serif; font-size:.88rem;
+  resize:none; outline:none; color:var(--text); transition:border .2s;
+}
+.modal textarea:focus { border-color:var(--amber); box-shadow:0 0 12px rgba(245,158,11,0.15); }
+
+/* ═══════════════════════════════════════════
+   LOG LIST
+═══════════════════════════════════════════ */
+.log-list { display:flex; flex-direction:column; gap:10px; }
+.log-entry {
+  background:rgba(20,10,0,0.8); border:1px solid var(--border);
+  border-radius:16px; padding:14px 18px;
+  display:flex; align-items:center; gap:14px;
+  transition:all .2s;
+}
+.log-entry:hover { border-color:var(--border-bright); transform:translateX(4px); box-shadow:0 0 20px var(--glow-amber); }
+.log-time { font-family:'Righteous',cursive; font-size:.78rem; color:var(--text-dim); min-width:50px; }
+.log-info { flex:1; }
+.log-type { font-weight:700; font-size:.88rem; color:var(--text); }
+.log-meta { font-size:.72rem; color:var(--text-dim); margin-top:2px; }
+.log-feel { font-size:1.3rem; }
+.log-del { background:none; border:none; cursor:pointer; color:rgba(239,68,68,0.3); font-size:1rem; transition:color .2s; }
+.log-del:hover { color:var(--red); }
+
+/* ═══════════════════════════════════════════
+   POOP PHRASE BOARD
+═══════════════════════════════════════════ */
+.phrase-board { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.phrase-item {
+  background:rgba(20,10,0,0.8); border:1px solid var(--border);
+  border-radius:16px; padding:16px; display:flex; gap:12px; align-items:flex-start;
+  transition:all .2s;
+}
+.phrase-item:hover { border-color:var(--border-bright); box-shadow:0 0 20px var(--glow-brown); transform:translateY(-2px); }
+.p-ico { font-size:1.8rem; flex-shrink:0; filter:drop-shadow(0 0 6px var(--glow-amber)); }
+.p-txt { font-size:.78rem; color:var(--neon-yellow); line-height:1.5; font-weight:500; }
+
+/* ═══════════════════════════════════════════
+   REMINDER TOGGLES
+═══════════════════════════════════════════ */
+.toggle-card {
+  background:rgba(20,10,0,0.8); border:1px solid var(--border);
+  border-radius:16px; padding:14px 18px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px; transition:all .2s;
+}
+.toggle-card:hover { border-color:var(--border-bright); }
+.tl-title { font-weight:700; font-size:.88rem; color:var(--text); }
+.tl-sub { font-size:.7rem; color:var(--text-dim); margin-top:2px; }
+.tswitch { position:relative; width:48px; height:26px; flex-shrink:0; }
+.tswitch input { opacity:0; width:0; height:0; }
+.ttrack { position:absolute; cursor:pointer; inset:0; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:50px; transition:.3s; }
+.ttrack::before { content:''; position:absolute; width:20px; height:20px; left:3px; top:3px; background:var(--text-dim); border-radius:50%; transition:.3s; }
+.tswitch input:checked + .ttrack { background:rgba(245,158,11,0.3); border-color:var(--amber); }
+.tswitch input:checked + .ttrack::before { transform:translateX(22px); background:var(--amber); box-shadow:0 0 10px rgba(245,158,11,0.5); }
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty-state { text-align:center; padding:36px 20px; }
+.empty-ico { font-size:3rem; filter:drop-shadow(0 0 15px var(--glow-amber)); display:inline-block; animation:emptyFloat 3s ease-in-out infinite; }
+@keyframes emptyFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.empty-txt { font-size:.9rem; color:var(--text-dim); margin-top:10px; font-weight:600; line-height:1.6; }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:linear-gradient(135deg, var(--brown1), #1e0f00);
+  border:1px solid var(--border-bright);
+  color:var(--neon-yellow); border-radius:50px;
+  padding:12px 28px; font-family:'Boogaloo',cursive; font-size:1.05rem;
+  box-shadow:0 8px 40px rgba(0,0,0,.6), 0 0 20px rgba(245,158,11,0.2);
+  z-index:300; transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap; backdrop-filter:blur(16px);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:520px) {
+  .hero-card { flex-direction:column; text-align:center; }
+  .sym-grid { grid-template-columns:repeat(3,1fr); }
+  .phrase-board { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--void); }
+::-webkit-scrollbar-thumb { background:var(--brown2); border-radius:4px; }
+::-webkit-scrollbar-thumb:hover { background:var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- FLOATING POOP RAIN -->
+<div class="poop-rain" id="poopRain"></div>
+
+<div class="page">
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <span class="header-poop">💩</span>
+  <h1>POOPLOG</h1>
+  <p class="tagline">🚽 GUT INTELLIGENCE SYSTEM 💨</p>
+  <div class="streak-pill">
+    <span class="fire">🔥</span>
+    <span id="streakNum">0</span> day streak
+  </div>
+</header>
+
+<!-- WAVE -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,20 C360,40 720,0 1080,20 C1260,30 1380,15 1440,20 L1440,40 L0,40 Z" fill="#0a0500"/>
+  </svg>
+</div>
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span>💩 Log your daily visits!</span>
+    <span>🚽 Healthy gut = Happy life!</span>
+    <span>💨 Cramps? Hit the ALERT button NOW!</span>
+    <span>🍌 Type 4 poop = PERFECTION!</span>
+    <span>💧 8 glasses of water = smooth moves!</span>
+    <span>🔥 Keep your poop streak alive!</span>
+    <span>🪠 Not pooping? Eat more fiber bro!</span>
+    <span>⚡ Urgency meter is your best friend!</span>
+    <span>💩 Log your daily visits!</span>
+    <span>🚽 Healthy gut = Happy life!</span>
+    <span>💨 Cramps? Hit the ALERT button NOW!</span>
+    <span>🍌 Type 4 poop = PERFECTION!</span>
+    <span>💧 8 glasses of water = smooth moves!</span>
+    <span>🔥 Keep your poop streak alive!</span>
+    <span>🪠 Not pooping? Eat more fiber bro!</span>
+    <span>⚡ Urgency meter is your best friend!</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════ CRAMP ALERT ═══════════ -->
+  <div class="cramp-banner" id="crampBanner">
+    <span class="cramp-icon">🚨</span>
+    <h2>CRAMP ALERT!! GO NOW! 🏃💨</h2>
+    <p>Your gut is screaming! 🚽 DROP EVERYTHING — THE TOILET NEEDS YOU RIGHT NOW!</p>
+    <p style="margin-top:8px;font-size:1.3rem;letter-spacing:4px;">💩 💩 💩 RUN... DON'T WALK!! 💩 💩 💩</p>
+    <button class="cramp-dismiss" onclick="dismissCramp()">✅ I Made It To The Throne!</button>
+  </div>
+
+  <!-- ═══════════ DAILY TIP ═══════════ -->
+  <div class="tip-box" id="tipBox">
+    <span class="tip-icon" id="tipIco">💡</span>
+    <span class="tip-text" id="tipText">Loading your daily gut wisdom...</span>
+  </div>
+
+  <!-- ═══════════ HERO TODAY ═══════════ -->
+  <div class="hero-card" style="margin-top:20px;">
+    <div class="hero-count">
+      <div class="hero-num" id="todayNum">0</div>
+      <div class="hero-label">TODAY'S 💩 VISITS</div>
+    </div>
+    <div class="hero-meta">
+      <div style="font-size:2rem;margin-bottom:4px;">⏱️</div>
+      <div class="hero-meta-val" id="avgDur">0m</div>
+      <div class="hero-meta-lbl">AVG DURATION</div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn btn-gold" onclick="openModal()">💩 Log a Visit</button>
+      <button class="btn btn-red" onclick="triggerCramp()">🚨 CRAMP ALERT!</button>
+      <button class="btn btn-ghost" onclick="undoLast()">↩️ Undo Last</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ URGENCY METER ═══════════ -->
+  <div class="sec-title">🚨 Urgency Meter</div>
+  <div class="card urgency-card">
+    <div class="urg-header">
+      <span>How bad is the urge right now?</span>
+      <span class="urg-current" id="urgLabel" style="color:#22c55e">😌 All Good</span>
+    </div>
+    <div class="urg-levels">
+      <div class="urg-btn" onclick="setUrge(1)"><span class="ue">😌</span>Chill</div>
+      <div class="urg-btn" onclick="setUrge(2)"><span class="ue">🤔</span>Kinda...</div>
+      <div class="urg-btn" onclick="setUrge(3)"><span class="ue">😬</span>NEED TO GO</div>
+      <div class="urg-btn" onclick="setUrge(4)"><span class="ue">🏃💨</span>EMERGENCY!!</div>
+    </div>
+    <div class="urg-msg" id="urgMsg"></div>
+  </div>
+
+  <!-- ═══════════ SYMPTOM CHECKER ═══════════ -->
+  <div class="sec-title">🤒 Symptom Checker</div>
+  <div class="sym-grid" id="symGrid"></div>
+
+  <!-- ═══════════ WATER ═══════════ -->
+  <div class="sec-title">💧 Hydration Tracker</div>
+  <div class="card water-card">
+    <div class="water-cups" id="waterCups"></div>
+    <div class="water-lbl" id="waterLbl">0 / 8 glasses today</div>
+  </div>
+
+  <!-- ═══════════ STATS ═══════════ -->
+  <div class="sec-title">📊 Gut Stats</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="s-ico">📅</div><div class="s-val" id="wkTot">0</div><div class="s-lbl">This Week</div></div>
+    <div class="stat-card"><div class="s-ico">🏆</div><div class="s-val" id="bestD">0</div><div class="s-lbl">Best Day</div></div>
+    <div class="stat-card"><div class="s-ico">😌</div><div class="s-val" id="topFeel">—</div><div class="s-lbl">Top Feeling</div></div>
+    <div class="stat-card"><div class="s-ico">🧻</div><div class="s-val" id="mthTot">0</div><div class="s-lbl">This Month</div></div>
+  </div>
+
+  <!-- ═══════════ WEEKLY CHART ═══════════ -->
+  <div class="sec-title">📈 Weekly Overview</div>
+  <div class="card chart-card">
+    <div class="bar-wrap" id="barWrap"></div>
+    <div id="barDays" style="display:flex;gap:10px;margin-top:6px;"></div>
+  </div>
+
+  <!-- ═══════════ DIGESTION SCORE ═══════════ -->
+  <div class="sec-title">🩺 Digestion Score</div>
+  <div class="card score-card">
+    <div class="score-ring-wrap">
+      <svg width="150" height="150">
+        <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(245,158,11,0.12)" stroke-width="12"/>
+        <circle cx="75" cy="75" r="60" fill="none" stroke="url(#rg)" stroke-width="12"
+          stroke-linecap="round" stroke-dasharray="376.99" id="scoreArc" stroke-dashoffset="376.99"/>
+        <defs>
+          <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fbbf24"/>
+            <stop offset="100%" stop-color="#d97706"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="score-inner">
+        <div class="score-n" id="scoreNum">—</div>
+        <div class="score-s">GUT SCORE</div>
+      </div>
+    </div>
+    <ul class="tip-list" id="scoreTips">
+      <li data-icon="💡">Log your first visit to unlock personalized insights!</li>
+    </ul>
+  </div>
+
+  <!-- ═══════════ POOP PHRASE BOARD ═══════════ -->
+  <div class="sec-title">💬 Poop Wisdom Board</div>
+  <div class="phrase-board" id="phraseBoard"></div>
+
+  <!-- ═══════════ TODAY'S LOG ═══════════ -->
+  <div class="sec-title">📋 Today's Log</div>
+  <div class="log-list" id="logList">
+    <div class="empty-state">
+      <span class="empty-ico">🚽</span>
+      <div class="empty-txt">The throne awaits...<br>No visits logged yet today!</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ REMINDERS ═══════════ -->
+  <div class="sec-title">⏰ Reminders</div>
+  <div class="toggle-card">
+    <div><div class="tl-title">🌅 Morning Ritual (8:00 AM)</div><div class="tl-sub">Best time for a healthy routine</div></div>
+    <label class="tswitch"><input type="checkbox" onchange="remToast(this,'Morning')"><span class="ttrack"></span></label>
+  </div>
+  <div class="toggle-card">
+    <div><div class="tl-title">☀️ Midday Check (2:00 PM)</div><div class="tl-sub">Afternoon gut health check-in</div></div>
+    <label class="tswitch"><input type="checkbox" onchange="remToast(this,'Midday')"><span class="ttrack"></span></label>
+  </div>
+  <div class="toggle-card">
+    <div><div class="tl-title">💧 Hydration Nudge</div><div class="tl-sub">Reminds you to drink more water</div></div>
+    <label class="tswitch"><input type="checkbox" onchange="remToast(this,'Hydration')"><span class="ttrack"></span></label>
+  </div>
+  <div class="toggle-card">
+    <div><div class="tl-title">🚨 Cramp Warning Mode</div><div class="tl-sub">Flash & vibrate on severe symptoms</div></div>
+    <label class="tswitch"><input type="checkbox" onchange="remToast(this,'Cramp Warning')"><span class="ttrack"></span></label>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /page -->
+
+<!-- ═══════════ LOG MODAL ═══════════ -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2>💩 Log a Visit</h2>
+
+    <span class="m-label">Bristol Stool Type</span>
+    <div class="bristol-grid" id="bristolGrid"></div>
+
+    <span class="m-label">How did it feel?</span>
+    <div class="feel-row" id="feelRow"></div>
+
+    <div class="srow">
+      <div class="slbl"><span>⏱️ Duration</span><span id="durDisp" style="color:var(--neon-gold)">5 min</span></div>
+      <input type="range" id="durSlider" min="1" max="30" value="5" oninput="document.getElementById('durDisp').textContent=this.value+' min'">
+    </div>
+
+    <span class="m-label">📝 Notes (optional)</span>
+    <textarea id="noteIn" rows="2" placeholder="Cramps before? What did you eat? Anything unusual?"></textarea>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn btn-gold" style="flex:1;justify-content:center;" onclick="saveLog()">✅ Save Log</button>
+      <button class="btn btn-ghost" onclick="closeModal()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════ CANVAS BACKGROUND ═══════ */
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// Organic bubbles
+for (let i = 0; i < 25; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    r: 20 + Math.random() * 120,
+    vx: (Math.random() - .5) * .3,
+    vy: (Math.random() - .5) * .3,
+    alpha: .03 + Math.random() * .05,
+    hue: 20 + Math.random() * 25
+  });
+}
+
+function animBG() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < -p.r) p.x = W + p.r;
+    if (p.x > W + p.r) p.x = -p.r;
+    if (p.y < -p.r) p.y = H + p.r;
+    if (p.y > H + p.r) p.y = -p.r;
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+    g.addColorStop(0, `hsla(${p.hue},80%,25%,${p.alpha})`);
+    g.addColorStop(1, `hsla(${p.hue},60%,10%,0)`);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  });
+  requestAnimationFrame(animBG);
+}
+animBG();
+
+/* ═══════ POOP RAIN ═══════ */
+const rainEl = document.getElementById('poopRain');
+const rainEmojis = ['💩','🚽','💨','🧻','🪠','💩','💩'];
+for (let i = 0; i < 20; i++) {
+  const d = document.createElement('div');
+  d.className = 'rain-drop';
+  d.textContent = rainEmojis[Math.floor(Math.random() * rainEmojis.length)];
+  d.style.left = Math.random() * 100 + 'vw';
+  d.style.fontSize = (.8 + Math.random() * 1.5) + 'rem';
+  d.style.animationDuration = (8 + Math.random() * 14) + 's';
+  d.style.animationDelay = (Math.random() * 12) + 's';
+  rainEl.appendChild(d);
+}
+
+/* ═══════ DATA ═══════ */
+const bristolData = [
+  {e:'🪨',n:'Type 1',l:'Separate lumps'},
+  {e:'🥜',n:'Type 2',l:'Lumpy sausage'},
+  {e:'🌭',n:'Type 3',l:'Cracked surface'},
+  {e:'🍌',n:'Type 4',l:'Smooth & soft ⭐'},
+  {e:'🐛',n:'Type 5',l:'Soft blobs'},
+  {e:'🫧',n:'Type 6',l:'Fluffy, mushy'},
+  {e:'💦',n:'Type 7',l:'Watery liquid'},
+  {e:'❓',n:'Unsure',l:'Not sure'},
+];
+const feelData = [
+  {e:'😌',l:'Great'},{e:'😐',l:'Okay'},{e:'😬',l:'Hard'},
+  {e:'😖',l:'Painful'},{e:'🏃',l:'Urgent'},
+];
+const symData = [
+  {e:'🌀',l:'Cramps',k:'cramps'},
+  {e:'🫃',l:'Bloating',k:'bloat'},
+  {e:'💨',l:'Gas/Farts',k:'gas'},
+  {e:'🤢',l:'Nausea',k:'nausea'},
+  {e:'🔥',l:'Heartburn',k:'burn'},
+  {e:'😰',l:'Sweating',k:'sweat'},
+];
+const phrases = [
+  {e:'🚽',t:'When cramps hit → run immediately! Holding it causes pain and constipation.'},
+  {e:'💨',t:'Farting 14–23 times a day is totally normal. Own it.'},
+  {e:'🧻',t:'Always wipe front to back. Non-negotiable gut hygiene rule.'},
+  {e:'🏃',t:'Cramps = your colon contracting. GET TO THE TOILET ASAP!'},
+  {e:'💩',t:'Perfect poop: effortless, soft, sausage-shaped. Type 4 is KING 👑.'},
+  {e:'⏱️',t:'Spending 10+ mins on the toilet strains your veins. Wrap it up!'},
+  {e:'😌',t:'Post-poop relief is scientifically one of life\'s greatest feelings. Period.'},
+  {e:'🪠',t:'Constipated? Warm water + gentle walk + belly massage. Works every time!'},
+];
+const tips = [
+  {i:'💡',t:'Best time to poop: 30 mins after waking or after meals!'},
+  {i:'🍌',t:'Bananas firm up loose stools. Eat one if you\'re rushing to the loo!'},
+  {i:'💧',t:'Warm water first thing in the morning kickstarts your gut!'},
+  {i:'🧘',t:'Squat position (feet on stool) straightens your colon for easier flow!'},
+  {i:'🌾',t:'Low on fiber? Try oats, apples, or broccoli. Your gut will love you!'},
+  {i:'🚶',t:'A 10-minute walk after meals dramatically speeds digestion!'},
+  {i:'☕',t:'Coffee stimulates bowel movements — many people\'s secret weapon! ☕💩'},
+  {i:'🧸',t:'Stress causes constipation or diarrhea. Deep breaths relax your gut!'},
+];
+const urgMsgs = [
+  '',
+  '😌 All chill. Take your sweet time.',
+  '🤔 Maybe head towards the toilet... just in case?',
+  '😬 Okay GO NOW. Speed-walk. Do NOT stop for anything.',
+  '🚨 ABANDON ALL TASKS. SPRINT. THE TOILET IS YOUR ONLY DESTINATION. 🏃💨💩',
+];
+const urgColors = ['','#22c55e','#eab308','#f97316','#ef4444'];
+const urgLbls = ['','😌 All Good','🤔 Mild Urge','😬 Need To Go!','🚨 EMERGENCY!!'];
+
+let logs = JSON.parse(localStorage.getItem('pl_logs')||'[]');
+let water = parseInt(localStorage.getItem('pl_water')||'0');
+let syms = JSON.parse(localStorage.getItem('pl_syms')||'{}');
+let selType = null, selFeel = null, curUrge = 0;
+const todayStr = new Date().toDateString();
+
+if (localStorage.getItem('pl_wdate') !== todayStr) {
+  water = 0;
+  localStorage.setItem('pl_water','0');
+  localStorage.setItem('pl_wdate', todayStr);
+}
+
+/* ═══════ BUILD UI ═══════ */
+function init() {
+  buildBristol(); buildFeel(); buildSyms(); buildWater();
+  buildWeekChart(); buildPhrases(); startTipRotation(); updateAll();
+}
+
+function startTipRotation() {
+  const show = () => {
+    const t = tips[Math.floor(Math.random()*tips.length)];
+    const box = document.getElementById('tipBox');
+    box.style.opacity='0'; box.style.transform='translateX(-10px)';
+    setTimeout(()=>{
+      document.getElementById('tipIco').textContent = t.i;
+      document.getElementById('tipText').textContent = t.t;
+      box.style.transition='all .5s ease';
+      box.style.opacity='1'; box.style.transform='translateX(0)';
+    }, 300);
+  };
+  show();
+  setInterval(show, 9000);
+}
+
+function buildBristol() {
+  document.getElementById('bristolGrid').innerHTML = bristolData.map((b,i)=>`
+    <div class="btype" onclick="pickType(${i})">
+      <div class="bt-ico">${b.e}</div>
+      <div class="bt-n">${b.n}</div>
+      <div class="bt-l">${b.l}</div>
+    </div>`).join('');
+}
+function buildFeel() {
+  document.getElementById('feelRow').innerHTML = feelData.map((f,i)=>`
+    <div class="feel-btn" onclick="pickFeel(${i})">
+      <span class="fe">${f.e}</span>${f.l}
+    </div>`).join('');
+}
+function buildSyms() {
+  document.getElementById('symGrid').innerHTML = symData.map(s=>`
+    <div class="sym-item ${syms[s.k]?'on':''}" onclick="toggleSym('${s.k}')">
+      <div class="sym-dot"></div>
+      <span class="sym-emoji">${s.e}</span>${s.l}
+    </div>`).join('');
+}
+function buildWater() {
+  document.getElementById('waterCups').innerHTML = Array.from({length:8},(_,i)=>`
+    <div class="cup ${i<water?'filled':''}" onclick="tapWater(${i+1})">🥛</div>`).join('');
+  document.getElementById('waterLbl').textContent = `${water} / 8 glasses today 💧`;
+}
+function buildWeekChart() {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const now = new Date();
+  const counts = Array.from({length:7},(_,i)=>{
+    const d = new Date(now); d.setDate(d.getDate()-(6-i));
+    return logs.filter(l=>new Date(l.ts).toDateString()===d.toDateString()).length;
+  });
+  const mx = Math.max(...counts,1);
+  document.getElementById('barWrap').innerHTML = counts.map((c,i)=>{
+    const d = new Date(now); d.setDate(d.getDate()-(6-i));
+    const isT = d.toDateString()===todayStr;
+    const h = Math.max(4,Math.round((c/mx)*82));
+    return `<div class="bar-col">
+      <div class="bar-n">${c||''}</div>
+      <div class="bar-fill${isT?' today':''}" style="height:${h}px"></div>
+    </div>`;
+  }).join('');
+  document.getElementById('barDays').innerHTML = counts.map((_,i)=>{
+    const d = new Date(now); d.setDate(d.getDate()-(6-i));
+    const isT = d.toDateString()===todayStr;
+    return `<div style="flex:1;text-align:center;">
+      <span class="bar-d${isT?' today-lbl':''}">${isT?'TODAY':days[d.getDay()]}</span>
+    </div>`;
+  }).join('');
+}
+function buildPhrases() {
+  document.getElementById('phraseBoard').innerHTML = phrases.map(p=>`
+    <div class="phrase-item"><span class="p-ico">${p.e}</span><span class="p-txt">${p.t}</span></div>`).join('');
+}
+
+/* ═══════ INTERACTIONS ═══════ */
+function pickType(i) {
+  selType = i;
+  document.querySelectorAll('.btype').forEach((el,j)=>el.classList.toggle('sel',j===i));
+}
+function pickFeel(i) {
+  selFeel = i;
+  document.querySelectorAll('.feel-btn').forEach((el,j)=>el.classList.toggle('sel',j===i));
+}
+function toggleSym(k) {
+  syms[k] = !syms[k];
+  localStorage.setItem('pl_syms',JSON.stringify(syms));
+  buildSyms();
+  if (syms.cramps) { toast('🌀 Cramps logged! Head to the throne ASAP!'); if(curUrge<3) setUrge(3); }
+  if (syms.gas)    toast('💨 Gas tracked. Let it rip! 🤣');
+  if (syms.nausea) toast('🤢 Nausea logged. Take it slow!');
+  if (syms.bloat)  toast('🫃 Bloating logged. Avoid fizzy drinks!');
+  updateScore(logs.filter(l=>new Date(l.ts).toDateString()===todayStr));
+}
+function setUrge(level) {
+  curUrge = level;
+  document.querySelectorAll('.urg-btn').forEach((el,i)=>{
+    el.className = 'urg-btn' + (i+1===level ? ` sel-${i+1}` : '');
+  });
+  const lbl = document.getElementById('urgLabel');
+  lbl.textContent = urgLbls[level];
+  lbl.style.color = urgColors[level];
+  document.getElementById('urgMsg').textContent = urgMsgs[level];
+  document.getElementById('urgMsg').style.color = urgColors[level];
+  if (level===4) triggerCramp();
+}
+function triggerCramp() {
+  const b = document.getElementById('crampBanner');
+  b.classList.add('active');
+  b.scrollIntoView({behavior:'smooth',block:'center'});
+  toast('🚨 CRAMP ALERT! GET TO THE TOILET NOW!');
+  if (navigator.vibrate) navigator.vibrate([400,100,400,100,600]);
+}
+function dismissCramp() {
+  document.getElementById('crampBanner').classList.remove('active');
+  curUrge = 0;
+  document.querySelectorAll('.urg-btn').forEach(el=>el.className='urg-btn');
+  document.getElementById('urgLabel').textContent='😌 All Good';
+  document.getElementById('urgLabel').style.color=urgColors[1];
+  document.getElementById('urgMsg').textContent='';
+  toast('🎉 You made it! Log your visit below!');
+  setTimeout(openModal, 1200);
+}
+function tapWater(n) {
+  water = water===n?n-1:n; if(water<0)water=0;
+  localStorage.setItem('pl_water',water);
+  buildWater();
+  if(water>=8) toast('💧 Fully hydrated! Your gut is THRIVING!');
+  else if(water===4) toast('💧 Halfway there! Keep going!');
+}
+
+/* ═══════ MODAL ═══════ */
+function openModal() {
+  selType=null; selFeel=null;
+  document.querySelectorAll('.btype,.feel-btn').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('durSlider').value=5;
+  document.getElementById('durDisp').textContent='5 min';
+  document.getElementById('noteIn').value='';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(e) {
+  if(!e||e.target===document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+}
+function saveLog() {
+  logs.unshift({ts:new Date().toISOString(),type:selType,feel:selFeel,dur:parseInt(document.getElementById('durSlider').value),note:document.getElementById('noteIn').value.trim()});
+  localStorage.setItem('pl_logs',JSON.stringify(logs));
+  closeModal();
+  updateAll(); buildWeekChart();
+  const msgs=['💩 Logged! The gut gods are pleased!','🚽 Flushed and logged, king!','💩 Another one bites the... porcelain!','🎉 Mission accomplished! Throne left!'];
+  toast(msgs[Math.floor(Math.random()*msgs.length)]);
+}
+function undoLast() {
+  const tl = logs.filter(l=>new Date(l.ts).toDateString()===todayStr);
+  if(!tl.length){toast('Nothing to undo!');return;}
+  logs = logs.filter(l=>l.ts!==tl[0].ts);
+  localStorage.setItem('pl_logs',JSON.stringify(logs));
+  updateAll(); buildWeekChart();
+  toast('↩️ Last entry removed!');
+}
+function deleteLog(ts) {
+  logs = logs.filter(l=>l.ts!==ts);
+  localStorage.setItem('pl_logs',JSON.stringify(logs));
+  updateAll(); buildWeekChart();
+  toast('🗑️ Entry deleted');
+}
+
+/* ═══════ UPDATE ALL ═══════ */
+function updateAll() {
+  const tl = logs.filter(l=>new Date(l.ts).toDateString()===todayStr);
+  document.getElementById('todayNum').textContent = tl.length;
+  if(tl.length) document.getElementById('avgDur').textContent = Math.round(tl.reduce((s,l)=>s+(l.dur||5),0)/tl.length)+'m';
+  const now = new Date();
+  document.getElementById('wkTot').textContent = logs.filter(l=>(now-new Date(l.ts))/864e5<7).length;
+  const dm={};
+  logs.forEach(l=>{const ds=new Date(l.ts).toDateString();dm[ds]=(dm[ds]||0)+1;});
+  document.getElementById('bestD').textContent = Math.max(0,...Object.values(dm));
+  const fc=[0,0,0,0,0];
+  logs.filter(l=>l.feel!=null).forEach(l=>fc[l.feel]++);
+  const tf=fc.indexOf(Math.max(...fc));
+  document.getElementById('topFeel').textContent = Math.max(...fc)>0?feelData[tf].e:'—';
+  document.getElementById('mthTot').textContent = logs.filter(l=>{const d=new Date(l.ts);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).length;
+  let streak=0,d=new Date();
+  while(logs.some(l=>new Date(l.ts).toDateString()===d.toDateString())){streak++;d.setDate(d.getDate()-1);}
+  document.getElementById('streakNum').textContent=streak;
+  renderLogs(tl);
+  updateScore(tl);
+}
+
+function renderLogs(tl) {
+  const el = document.getElementById('logList');
+  if(!tl.length){
+    el.innerHTML=`<div class="empty-state"><span class="empty-ico">🚽</span><div class="empty-txt">The throne awaits...<br>No visits logged yet today! Hit the big gold button!</div></div>`;
+    return;
+  }
+  el.innerHTML = tl.map((l,i)=>{
+    const t=new Date(l.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const bt=l.type!=null?bristolData[l.type]:null;
+    const fe=l.feel!=null?feelData[l.feel]:null;
+    return `<div class="log-entry" style="animation:cardPop .4s ease ${i*.07}s both">
+      <div class="log-time">${t}</div>
+      <div class="log-info">
+        <div class="log-type">${bt?bt.e+' '+bt.n:'💩 Visit'}</div>
+        <div class="log-meta">${l.dur||5}min${fe?' · '+fe.l:''}${l.note?' · '+l.note.substring(0,30):''}</div>
+      </div>
+      <div class="log-feel">${fe?fe.e:''}</div>
+      <button class="log-del" onclick="deleteLog('${l.ts}')">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function updateScore(tl) {
+  const arc=document.getElementById('scoreArc');
+  const sn=document.getElementById('scoreNum');
+  const stips=document.getElementById('scoreTips');
+  if(!tl.length){arc.style.strokeDashoffset=376.99;sn.textContent='—';return;}
+  let sc=60;
+  const n=tl.length;
+  if(n>=1&&n<=3)sc+=15; else if(n>5)sc-=15;
+  [0,5,15,20,20,10,0,-10,-5].forEach((v,i)=>{if(tl.some(l=>l.type===i))sc+=v;});
+  [20,10,0,-10,-15].forEach((v,i)=>{if(tl.some(l=>l.feel===i))sc+=v;});
+  if(water>=6)sc+=10;
+  if(syms.cramps)sc-=10;
+  if(syms.nausea)sc-=8;
+  sc=Math.max(0,Math.min(100,Math.round(sc/n)));
+  arc.style.strokeDashoffset=376.99*(1-sc/100);
+  const col=sc>=70?'#22c55e':sc>=40?'#f59e0b':'#ef4444';
+  arc.style.stroke=col; sn.textContent=sc; sn.style.color=col;
+  const ts=[];
+  if(water<6)ts.push({i:'💧',t:'Drink more water — aim for 8 glasses for smooth digestion.'});
+  if(n>4)ts.push({i:'⚠️',t:'More than 4 visits today. Watch your diet and hydration.'});
+  if(tl.some(l=>l.type===0||l.type===1))ts.push({i:'🌾',t:'Hard stools = constipation. Load up on fiber and fluids!'});
+  if(tl.some(l=>l.type===5||l.type===6))ts.push({i:'🩺',t:'Loose stools detected. Stay hydrated and rest.'});
+  if(syms.cramps)ts.push({i:'🌀',t:'Cramps logged! A warm compress on your belly helps a lot.'});
+  if(syms.bloat)ts.push({i:'🫃',t:'Bloating? Avoid fizzy drinks and try peppermint tea.'});
+  if(sc>=80)ts.push({i:'🎉',t:'Incredible gut health today! Keep the streak going!'});
+  if(!ts.length)ts.push({i:'✅',t:'Gut health looking good! Maintain hydration and fiber intake.'});
+  stips.innerHTML=ts.map(t=>`<li data-icon="${t.i}">${t.t}</li>`).join('');
+}
+
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),2800);
+}
+function remToast(el,name) { toast(el.checked?`⏰ ${name} reminder ON!`:`🔕 ${name} reminder OFF`); }
+
+init();
+</script>
+</body>
+</html>
